@@ -1,20 +1,30 @@
+import java.util.*; // import all util classes
+
 class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
-        if (lists == null || lists.length == 0) return null;
+        // Min-heap based on node values
+        PriorityQueue<ListNode> minHeap = new PriorityQueue<>(
+            (a, b) -> a.val - b.val
+        );
 
-        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> Integer.compare(a.val, b.val));
+        // Add the head of each non-empty list to the heap
         for (ListNode node : lists) {
-            if (node != null) pq.add(node);
+            if (node != null) {
+                minHeap.offer(node);
+            }
         }
 
         ListNode dummy = new ListNode(0);
         ListNode tail = dummy;
 
-        while (!pq.isEmpty()) {
-            ListNode node = pq.poll();
-            tail.next = node;
+        while (!minHeap.isEmpty()) {
+            ListNode smallest = minHeap.poll();
+            tail.next = smallest;
             tail = tail.next;
-            if (node.next != null) pq.add(node.next);
+
+            if (smallest.next != null) {
+                minHeap.offer(smallest.next);
+            }
         }
 
         return dummy.next;
